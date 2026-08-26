@@ -37,7 +37,8 @@ const MOBILE_UA =
 function normalizeUrl(rawUrl) {
   try {
     const u = new URL(rawUrl.trim());
-    u.hostname = "www.facebook.com";
+    // mbasic version login-wall onek kom dekhay, HD/SD source o shohoje pawa jay
+    u.hostname = "mbasic.facebook.com";
     return u.toString();
   } catch (e) {
     throw new Error("INVALID_URL");
@@ -45,15 +46,34 @@ function normalizeUrl(rawUrl) {
 }
 
 async function resolveRedirect(url) {
-  // fb.watch shortlinks redirect kore আসল video URL-e.
-  if (url.includes("fb.watch")) {
+  // fb.watch shortlink othoba /share/v/ /share/r/ link - egulo আসল video URL-e
+  // redirect hoy, tai age shei redirect follow kore আসল URL ber korte hobe.
+  const needsRedirectResolve =
+    url.includes("fb.watch") ||
+    url.includes("/share/v/") ||
+    url.includes("/share/r/") ||
+    url.includes("/share/p/");
+
+  if (needsRedirectResolve) {
     const res = await axios.get(url, {
-      maxRedirects: 5,
-      headers: { "User-Agent": MOBILE_UA },
+      maxRedirects: 10,
+      headers: {
+        "User-Agent": MOBILE_UA,
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      validateStatus: (status) => status < 400,
     });
     return res.request.res.responseUrl || url;
   }
   return url;
+}
+
+function isLoginWall(html) {
+  return (
+    html.includes('id="login_form"') ||
+    html.includes('name="login"') ||
+    (html.includes("login") && html.includes("password") && html.length < 20000)
+  );
 }
 
 async function fetchFacebookHtml(url) {
@@ -122,6 +142,14 @@ app.post("/api/resolve", async (req, res) => {
     const redirected = await resolveRedirect(url);
     const normalized = normalizeUrl(redirected);
     const html = await fetchFacebookHtml(normalized);
+
+    if (isLoginWall(html)) {
+      return res.status(422).json({
+        error:
+          "Facebook login page dekhacche - ei video ta public na, othoba Facebook bot mone kore login chacche. Video-r post-e giye link ta abar 'Copy link' kore try korun, othoba video ta সত্যিই public kina (logout obosthay/incognito-te) check korun.",
+      });
+    }
+
     const { hd, sd, title } = extractVideoLinks(html);
 
     if (!hd && !sd) {
