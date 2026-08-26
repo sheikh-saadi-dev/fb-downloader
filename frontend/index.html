@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Facebook Video Downloader</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #1877f2 0%, #0a3d91 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #fff;
+    max-width: 480px;
+    width: 100%;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: #1c1e21;
+    text-align: center;
+  }
+  p.sub {
+    text-align: center;
+    color: #65676b;
+    font-size: 14px;
+    margin: 0 0 24px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #dadde1;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  input[type="text"]:focus { border-color: #1877f2; }
+  button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #1877f2;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #145dbf; }
+  button:disabled { background: #a8c6f5; cursor: not-allowed; }
+  .result {
+    margin-top: 22px;
+    display: none;
+  }
+  .result.show { display: block; }
+  .result a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .btn-hd { background: #e7f3ff; color: #1877f2; border: 1.5px solid #1877f2; }
+  .btn-sd { background: #f0f2f5; color: #1c1e21; border: 1.5px solid #dadde1; }
+  .msg {
+    margin-top: 16px;
+    font-size: 13.5px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .msg.error { background: #fde2e1; color: #c0392b; }
+  .msg.loading { background: #eef3fc; color: #1877f2; }
+  .note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #90949c;
+    text-align: center;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>📥 Facebook Video Downloader</h1>
+  <p class="sub">Public Facebook video/reel-এর লিংক পেস্ট করুন</p>
+
+  <input type="text" id="fbUrl" placeholder="https://www.facebook.com/..." />
+  <button id="downloadBtn">Download Link বের করুন</button>
+
+  <div class="msg" id="msgBox"></div>
+
+  <div class="result" id="resultBox">
+    <a href="#" id="hdLink" class="btn-hd" download target="_blank">⬇ HD Quality Download</a>
+    <a href="#" id="sdLink" class="btn-sd" download target="_blank">⬇ SD Quality Download</a>
+  </div>
+
+  <p class="note">
+    শুধুমাত্র <b>public</b> ভিডিওর জন্য কাজ করে। ব্যক্তিগত ব্যবহারের জন্য —
+    কপিরাইটেড কন্টেন্ট শেয়ার/রিডিস্ট্রিবিউট করা থেকে বিরত থাকুন।
+  </p>
+</div>
+
+<script>
+  // ⚠️ Ei URL ta apnar deploy kora backend-er URL diye replace korun
+  // (Render/Railway/Vercel e deploy korar por je URL pabben)
+  const BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com";
+
+  const urlInput = document.getElementById("fbUrl");
+  const btn = document.getElementById("downloadBtn");
+  const msgBox = document.getElementById("msgBox");
+  const resultBox = document.getElementById("resultBox");
+  const hdLink = document.getElementById("hdLink");
+  const sdLink = document.getElementById("sdLink");
+
+  function showMsg(text, type) {
+    msgBox.textContent = text;
+    msgBox.className = "msg " + type;
+    msgBox.style.display = text ? "block" : "none";
+  }
+
+  btn.addEventListener("click", async () => {
+    const url = urlInput.value.trim();
+    resultBox.classList.remove("show");
+
+    if (!url) {
+      showMsg("দয়া করে একটা Facebook video লিংক দিন।", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "খোঁজা হচ্ছে...";
+    showMsg("লিংক প্রসেস হচ্ছে, একটু অপেক্ষা করুন...", "loading");
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/resolve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showMsg(data.error || "কিছু একটা সমস্যা হয়েছে।", "error");
+        return;
+      }
+
+      showMsg("", "");
+      if (data.downloads.hd) hdLink.href = data.downloads.hd;
+      else hdLink.style.display = "none";
+
+      if (data.downloads.sd) sdLink.href = data.downloads.sd;
+      else sdLink.style.display = "none";
+
+      resultBox.classList.add("show");
+    } catch (err) {
+      showMsg("Backend-এ কানেক্ট করা যায়নি। BACKEND_URL ঠিক আছে কিনা চেক করুন।", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Download Link বের করুন";
+    }
+  });
+</script>
+
+</body>
+</html>
