@@ -1,182 +1,612 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Facebook Video Downloader</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUXPRO — Modern femininity, precisely designed.</title>
+<meta name="description" content="LUXPRO — contemporary women's fashion house. New season, quietly considered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #1877f2 0%, #0a3d91 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .card {
-    background: #fff;
-    max-width: 480px;
-    width: 100%;
-    border-radius: 16px;
-    padding: 32px 28px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-  }
-  h1 {
-    font-size: 22px;
-    margin: 0 0 6px;
-    color: #1c1e21;
-    text-align: center;
-  }
-  p.sub {
-    text-align: center;
-    color: #65676b;
-    font-size: 14px;
-    margin: 0 0 24px;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid #dadde1;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    transition: border 0.2s;
-  }
-  input[type="text"]:focus { border-color: #1877f2; }
-  button {
-    width: 100%;
-    margin-top: 12px;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #1877f2;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  button:hover { background: #145dbf; }
-  button:disabled { background: #a8c6f5; cursor: not-allowed; }
-  .result {
-    margin-top: 22px;
-    display: none;
-  }
-  .result.show { display: block; }
-  .result a {
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    padding: 13px;
-    border-radius: 10px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    font-size: 14px;
-  }
-  .btn-hd { background: #e7f3ff; color: #1877f2; border: 1.5px solid #1877f2; }
-  .btn-sd { background: #f0f2f5; color: #1c1e21; border: 1.5px solid #dadde1; }
-  .msg {
-    margin-top: 16px;
-    font-size: 13.5px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-  }
-  .msg.error { background: #fde2e1; color: #c0392b; }
-  .msg.loading { background: #eef3fc; color: #1877f2; }
-  .note {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #90949c;
-    text-align: center;
-    line-height: 1.5;
-  }
+
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --bg: #F7F4EE;
+  --surface: #EDE8DE;
+  --surface-2: #E3DDCE;
+  --ink: #1B1A18;
+  --ink-soft: #55504A;
+  --border: #DCD5C8;
+  --accent: #2F4A3E;
+  --accent-ink: #0F1F19;
+  --sale: #A23B2E;
+
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Archivo', -apple-system, Helvetica, Arial, sans-serif;
+
+  --header-h: 76px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+h1,h2,h3,p{margin:0;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+
+.container{max-width:1360px;margin:0 auto;padding:0 32px;}
+@media (max-width:900px){.container{padding:0 20px;}}
+
+.label{
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  font-weight:500;
+}
+
+.serif-display{
+  font-family:var(--serif);
+  font-weight:400;
+  font-variation-settings:'opsz' 60;
+  line-height:1.05;
+  letter-spacing:-.01em;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:15px 30px;
+  font-size:13px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  font-weight:500;
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+.btn-primary{background:var(--ink);color:var(--bg);}
+.btn-primary:hover{background:var(--accent);}
+.btn-outline{border:1px solid var(--ink);color:var(--ink);}
+.btn-outline:hover{background:var(--ink);color:var(--bg);}
+
+.underline-link{position:relative;display:inline-block;}
+.underline-link::after{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform .35s var(--ease);
+}
+.underline-link:hover::after{transform:scaleX(1);transform-origin:left;}
+
+/* placeholder photography blocks — swap background-image for real assets */
+.ph{
+  background:linear-gradient(155deg, var(--surface-2) 0%, var(--surface) 55%, var(--border) 100%);
+  position:relative;
+  overflow:hidden;
+}
+.ph::after{
+  content:attr(data-ph);
+  position:absolute;bottom:14px;left:14px;
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);opacity:.55;
+  font-family:var(--sans);
+}
+
+/* ============ ANNOUNCEMENT BAR ============ */
+.announce{
+  background:var(--ink);
+  color:var(--bg);
+  text-align:center;
+  font-size:12px;
+  letter-spacing:.05em;
+  padding:10px 0;
+}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:100;
+  height:var(--header-h);
+  display:flex;align-items:center;
+  transition:background .4s var(--ease), border-color .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+header.solid{background:rgba(247,244,238,.96);backdrop-filter:blur(6px);border-color:var(--border);}
+.nav-row{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:var(--serif);font-size:22px;letter-spacing:.02em;}
+.primary-nav{display:flex;gap:36px;list-style:none;padding:0;margin:0;}
+.primary-nav a{font-size:13px;letter-spacing:.02em;position:relative;padding:6px 0;}
+.primary-nav > li{position:relative;}
+.icon-row{display:flex;gap:22px;align-items:center;}
+.icon-btn{font-size:13px;letter-spacing:.02em;position:relative;}
+.bag-count{
+  position:absolute;top:-8px;right:-12px;
+  font-size:10px;background:var(--accent);color:var(--bg);
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.mobile-only{display:none;}
+.desktop-only{display:flex;}
+
+@media (max-width:900px){
+  .primary-nav{display:none;}
+  .desktop-only{display:none;}
+  .mobile-only{display:flex;}
+}
+
+/* mega menu */
+.mega{
+  position:absolute;top:100%;left:0;right:0;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:44px 0 52px;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
+}
+.primary-nav > li:hover .mega,
+.primary-nav > li:focus-within .mega{opacity:1;visibility:visible;transform:translateY(0);}
+.mega-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;}
+.mega-grid h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:500;margin-bottom:16px;}
+.mega-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;}
+.mega-grid a{font-size:14px;}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;
+  height:calc(100svh - var(--header-h));
+  min-height:560px;
+  display:flex;
+  align-items:flex-end;
+}
+.hero-media{position:absolute;inset:0;}
+.hero-content{position:relative;padding:0 32px 72px;width:100%;}
+.hero-eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px;opacity:0;animation:rise .9s .15s var(--ease) forwards;}
+.hero h1{font-size:clamp(40px,7vw,92px);max-width:820px;opacity:0;animation:rise 1s .3s var(--ease) forwards;}
+.hero-cta{margin-top:32px;opacity:0;animation:rise 1s .55s var(--ease) forwards;}
+@keyframes rise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============ SECTION SPACING ============ */
+section{padding:120px 0;}
+@media (max-width:900px){section{padding:72px 0;}}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;gap:24px;}
+.section-head h2{font-size:clamp(30px,3.6vw,48px);}
+@media (max-width:640px){.section-head{flex-direction:column;align-items:flex-start;gap:16px;}}
+
+/* ============ CATEGORY DISCOVERY ============ */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.cat-card{aspect-ratio:3/4;position:relative;}
+.cat-card .ph{position:absolute;inset:0;transition:transform .6s var(--ease);}
+.cat-card:hover .ph{transform:scale(1.04);}
+.cat-name{position:absolute;bottom:22px;left:22px;font-family:var(--serif);font-size:22px;color:var(--ink);z-index:2;}
+@media (max-width:900px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ============ PRODUCT SCROLLER ============ */
+.scroller{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;-webkit-overflow-scrolling:touch;}
+.scroller::-webkit-scrollbar{height:0;}
+.p-card{flex:0 0 280px;scroll-snap-align:start;}
+@media (max-width:640px){.p-card{flex-basis:64%;}}
+.p-media{position:relative;aspect-ratio:4/5;overflow:hidden;}
+.p-media .ph{position:absolute;inset:0;transition:opacity .45s var(--ease);}
+.p-media .ph.alt{opacity:0;}
+.p-card:hover .p-media .ph.main{opacity:0;}
+.p-card:hover .p-media .ph.alt{opacity:1;}
+.wish-btn{
+  position:absolute;top:14px;right:14px;width:34px;height:34px;
+  background:rgba(247,244,238,.9);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:transform .25s var(--ease);
+}
+.wish-btn:hover{transform:scale(1.1);}
+.p-info{padding-top:14px;display:flex;flex-direction:column;gap:4px;}
+.p-name{font-size:14px;}
+.p-price{font-size:14px;color:var(--ink-soft);}
+.p-swatches{display:flex;gap:6px;margin-top:4px;}
+.swatch{width:14px;height:14px;border-radius:50%;border:1px solid var(--border);}
+
+/* ============ EDITORIAL STORY ============ */
+.editorial{position:relative;height:82vh;min-height:520px;display:flex;align-items:center;}
+.editorial .ph{position:absolute;inset:0;}
+.editorial-content{position:relative;max-width:520px;padding:0 32px;color:var(--bg);}
+.editorial-content h2{font-size:clamp(30px,4.5vw,56px);color:var(--bg);}
+.editorial-content p{margin-top:20px;font-size:16px;line-height:1.6;color:var(--surface);}
+.editorial::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(15,25,20,.55), rgba(15,25,20,.1));}
+
+/* ============ FEATURED COLLECTION (asymmetric split) ============ */
+.split{display:grid;grid-template-columns:1.2fr 1fr;gap:0;align-items:stretch;}
+.split .ph{min-height:560px;}
+.split-text{background:var(--surface);display:flex;flex-direction:column;justify-content:center;padding:64px;gap:22px;}
+.split-text h2{font-size:clamp(28px,3.4vw,44px);}
+.split-text p{color:var(--ink-soft);line-height:1.6;max-width:380px;}
+@media (max-width:900px){.split{grid-template-columns:1fr;}.split .ph{min-height:400px;}.split-text{padding:40px 28px;}}
+
+/* ============ BESTSELLERS ============ */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+@media (max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);gap:18px;}}
+
+/* ============ LOOKBOOK (asymmetric masonry) ============ */
+.lookbook{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:120px;gap:20px;}
+.look-item{position:relative;overflow:hidden;}
+.look-item .ph{position:absolute;inset:0;transition:transform .6s var(--ease);}
+.look-item:hover .ph{transform:scale(1.03);}
+.look-name{
+  position:absolute;bottom:0;left:0;right:0;padding:20px;
+  font-size:14px;color:var(--bg);
+  background:linear-gradient(0deg, rgba(15,25,20,.5), transparent);
+  opacity:0;transition:opacity .3s var(--ease);
+}
+.look-item:hover .look-name{opacity:1;}
+.l1{grid-column:span 3;grid-row:span 4;}
+.l2{grid-column:span 3;grid-row:span 3;}
+.l3{grid-column:span 2;grid-row:span 3;}
+.l4{grid-column:span 4;grid-row:span 3;}
+@media (max-width:900px){
+  .lookbook{grid-template-columns:repeat(2,1fr);}
+  .l1,.l2,.l3,.l4{grid-column:span 1;grid-row:span 3;}
+}
+
+/* ============ BRAND STORY ============ */
+.brand-story{text-align:center;}
+.brand-story h2{font-size:clamp(28px,4vw,46px);max-width:760px;margin:0 auto;}
+.brand-story p{max-width:520px;margin:24px auto 32px;color:var(--ink-soft);line-height:1.6;}
+
+/* ============ NEWSLETTER ============ */
+.newsletter{background:var(--ink);color:var(--bg);text-align:center;}
+.newsletter h2{color:var(--bg);font-size:clamp(28px,3.6vw,44px);}
+.newsletter p{color:var(--surface);margin-top:14px;}
+.nl-form{display:flex;max-width:420px;margin:36px auto 0;border-bottom:1px solid var(--surface);}
+.nl-form input{
+  flex:1;background:none;border:none;color:var(--bg);padding:12px 4px;font-size:14px;
+}
+.nl-form input::placeholder{color:var(--ink-soft);}
+.nl-form button{font-size:12px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:12px 4px;}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--border);padding:80px 0 40px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px;margin-bottom:60px;}
+.footer-grid h5{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px;}
+.footer-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;font-size:14px;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:32px;border-top:1px solid var(--border);font-size:12px;color:var(--ink-soft);}
+.region-select{display:flex;gap:16px;}
+.region-select select{background:none;border:1px solid var(--border);padding:8px 12px;font-size:12px;font-family:var(--sans);color:var(--ink);}
+@media (max-width:900px){.footer-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* mobile bottom bag bar reserved for PDP, not homepage */
 </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>📥 Facebook Video Downloader</h1>
-  <p class="sub">Public Facebook video/reel-এর লিংক পেস্ট করুন</p>
+<div class="announce">Complimentary worldwide shipping on your first order</div>
 
-  <input type="text" id="fbUrl" placeholder="https://www.facebook.com/..." />
-  <button id="downloadBtn">Download Link বের করুন</button>
+<header id="siteHeader">
+  <div class="container nav-row">
+    <a href="#" class="logo">LUXPRO</a>
 
-  <div class="msg" id="msgBox"></div>
+    <ul class="primary-nav desktop-only">
+      <li>
+        <a href="#" class="underline-link">Women</a>
+        <div class="mega">
+          <div class="container mega-grid">
+            <div>
+              <h4>Clothing</h4>
+              <ul>
+                <li><a href="#" class="underline-link">Dresses</a></li>
+                <li><a href="#" class="underline-link">Tops &amp; Shirts</a></li>
+                <li><a href="#" class="underline-link">Knitwear</a></li>
+                <li><a href="#" class="underline-link">Trousers</a></li>
+                <li><a href="#" class="underline-link">Denim</a></li>
+                <li><a href="#" class="underline-link">Outerwear</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Collections</h4>
+              <ul>
+                <li><a href="#" class="underline-link">New Collection</a></li>
+                <li><a href="#" class="underline-link">Essentials</a></li>
+                <li><a href="#" class="underline-link">Evening</a></li>
+                <li><a href="#" class="underline-link">Seasonal Edit</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Accessories</h4>
+              <ul>
+                <li><a href="#" class="underline-link">Bags</a></li>
+                <li><a href="#" class="underline-link">Shoes</a></li>
+                <li><a href="#" class="underline-link">Jewelry</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Editorial</h4>
+              <ul>
+                <li><a href="#" class="underline-link">Stories</a></li>
+                <li><a href="#" class="underline-link">Lookbook</a></li>
+                <li><a href="#" class="underline-link">Campaigns</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li><a href="#" class="underline-link">New In</a></li>
+      <li><a href="#" class="underline-link">Collections</a></li>
+      <li><a href="#" class="underline-link">Clothing</a></li>
+      <li><a href="#" class="underline-link">Accessories</a></li>
+      <li><a href="#" class="underline-link">Editorial</a></li>
+    </ul>
 
-  <div class="result" id="resultBox">
-    <a href="#" id="hdLink" class="btn-hd" download target="_blank">⬇ HD Quality Download</a>
-    <a href="#" id="sdLink" class="btn-sd" download target="_blank">⬇ SD Quality Download</a>
+    <div class="icon-row">
+      <button class="icon-btn desktop-only" aria-label="Search">Search</button>
+      <button class="icon-btn desktop-only" aria-label="Account">Account</button>
+      <button class="icon-btn" aria-label="Wishlist">Wishlist</button>
+      <button class="icon-btn" style="position:relative;" aria-label="Bag, 2 items">Bag<span class="bag-count">2</span></button>
+      <button class="icon-btn mobile-only" aria-label="Menu">Menu</button>
+    </div>
   </div>
+</header>
 
-  <p class="note">
-    শুধুমাত্র <b>public</b> ভিডিওর জন্য কাজ করে। ব্যক্তিগত ব্যবহারের জন্য —
-    কপিরাইটেড কন্টেন্ট শেয়ার/রিডিস্ট্রিবিউট করা থেকে বিরত থাকুন।
-  </p>
-</div>
+<section class="hero" style="padding:0;">
+  <div class="hero-media ph" data-ph="Campaign — New Season 01"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">New Season</p>
+    <h1 class="serif-display">The art of everyday</h1>
+    <a href="#new-arrivals" class="btn btn-primary hero-cta">Shop the collection</a>
+  </div>
+</section>
+
+<section aria-label="Shop by category">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="serif-display">Discover</h2>
+      <a href="#" class="underline-link label">View all categories</a>
+    </div>
+    <div class="cat-grid">
+      <a href="#" class="cat-card"><div class="ph" data-ph="Dresses"></div><span class="cat-name">Dresses</span></a>
+      <a href="#" class="cat-card"><div class="ph" data-ph="Tops"></div><span class="cat-name">Tops</span></a>
+      <a href="#" class="cat-card"><div class="ph" data-ph="Outerwear"></div><span class="cat-name">Outerwear</span></a>
+      <a href="#" class="cat-card"><div class="ph" data-ph="Accessories"></div><span class="cat-name">Accessories</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="new-arrivals">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="serif-display">New arrivals</h2>
+      <a href="#" class="underline-link label">Shop all new in</a>
+    </div>
+    <div class="scroller">
+      <!-- product card template x6 -->
+      <div class="p-card">
+        <div class="p-media">
+          <div class="ph main" data-ph="Look 01"></div>
+          <div class="ph alt" data-ph="Look 01 — back"></div>
+          <button class="wish-btn" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Draped Silk Midi Dress</p>
+          <p class="p-price">$385</p>
+          <div class="p-swatches"><span class="swatch" style="background:#1B1A18"></span><span class="swatch" style="background:#EDE8DE"></span><span class="swatch" style="background:#2F4A3E"></span></div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-media">
+          <div class="ph main" data-ph="Look 02"></div>
+          <div class="ph alt" data-ph="Look 02 — back"></div>
+          <button class="wish-btn" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Tailored Wool Trouser</p>
+          <p class="p-price">$260</p>
+          <div class="p-swatches"><span class="swatch" style="background:#1B1A18"></span><span class="swatch" style="background:#55504A"></span></div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-media">
+          <div class="ph main" data-ph="Look 03"></div>
+          <div class="ph alt" data-ph="Look 03 — back"></div>
+          <button class="wish-btn" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Fine Rib Knit Top</p>
+          <p class="p-price">$145</p>
+          <div class="p-swatches"><span class="swatch" style="background:#EDE8DE"></span><span class="swatch" style="background:#A23B2E"></span></div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-media">
+          <div class="ph main" data-ph="Look 04"></div>
+          <div class="ph alt" data-ph="Look 04 — back"></div>
+          <button class="wish-btn" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Structured Leather Coat</p>
+          <p class="p-price">$920</p>
+          <div class="p-swatches"><span class="swatch" style="background:#1B1A18"></span></div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-media">
+          <div class="ph main" data-ph="Look 05"></div>
+          <div class="ph alt" data-ph="Look 05 — back"></div>
+          <button class="wish-btn" aria-label="Add to wishlist">♡</button>
+        </div>
+        <div class="p-info">
+          <p class="p-name">Asymmetric Linen Shirt</p>
+          <p class="p-price">$195</p>
+          <div class="p-swatches"><span class="swatch" style="background:#EDE8DE"></span><span class="swatch" style="background:#2F4A3E"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="editorial">
+  <div class="ph" data-ph="Editorial — The New Femininity"></div>
+  <div class="editorial-content">
+    <h2 class="serif-display">The new femininity</h2>
+    <p>A season built on quiet confidence — considered silhouettes, tactile fabrics, and the freedom to move through a day without a second thought about what you're wearing.</p>
+    <a href="#" class="btn btn-outline" style="border-color:var(--bg);color:var(--bg);margin-top:28px;">Explore the story</a>
+  </div>
+</section>
+
+<section style="padding:0;">
+  <div class="split">
+    <div class="ph" data-ph="Featured Collection — Essentials"></div>
+    <div class="split-text">
+      <p class="label">Featured collection</p>
+      <h2 class="serif-display">Essentials, reconsidered</h2>
+      <p>Twelve pieces designed to be worn on rotation — cut from fabrics that soften with time, in a palette that never competes with itself.</p>
+      <a href="#" class="btn btn-primary" style="width:fit-content;">Shop essentials</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2 class="serif-display">Bestsellers</h2>
+      <a href="#" class="underline-link label">View all</a>
+    </div>
+    <div class="grid-4">
+      <div class="p-card">
+        <div class="p-media"><div class="ph main" data-ph="Bestseller 01"></div><div class="ph alt" data-ph="Bestseller 01 — back"></div><button class="wish-btn" aria-label="Add to wishlist">♡</button></div>
+        <div class="p-info"><p class="p-name">The Column Dress</p><p class="p-price">$340</p></div>
+      </div>
+      <div class="p-card">
+        <div class="p-media"><div class="ph main" data-ph="Bestseller 02"></div><div class="ph alt" data-ph="Bestseller 02 — back"></div><button class="wish-btn" aria-label="Add to wishlist">♡</button></div>
+        <div class="p-info"><p class="p-name">Belted Wrap Coat</p><p class="p-price">$610</p></div>
+      </div>
+      <div class="p-card">
+        <div class="p-media"><div class="ph main" data-ph="Bestseller 03"></div><div class="ph alt" data-ph="Bestseller 03 — back"></div><button class="wish-btn" aria-label="Add to wishlist">♡</button></div>
+        <div class="p-info"><p class="p-name">Cropped Merino Cardigan</p><p class="p-price">$210</p></div>
+      </div>
+      <div class="p-card">
+        <div class="p-media"><div class="ph main" data-ph="Bestseller 04"></div><div class="ph alt" data-ph="Bestseller 04 — back"></div><button class="wish-btn" aria-label="Add to wishlist">♡</button></div>
+        <div class="p-info"><p class="p-name">Straight Leg Denim</p><p class="p-price">$175</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-label="Lookbook">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="serif-display">Lookbook</h2>
+      <a href="#" class="underline-link label">Full lookbook</a>
+    </div>
+    <div class="lookbook">
+      <a href="#" class="look-item l1"><div class="ph" data-ph="Look — Morning"></div><span class="look-name">Morning, Lisbon</span></a>
+      <a href="#" class="look-item l2"><div class="ph" data-ph="Look — Studio"></div><span class="look-name">Studio Visit</span></a>
+      <a href="#" class="look-item l3"><div class="ph" data-ph="Look — Detail"></div><span class="look-name">In Detail</span></a>
+      <a href="#" class="look-item l4"><div class="ph" data-ph="Look — Evening"></div><span class="look-name">After Hours</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="brand-story">
+  <div class="container">
+    <h2 class="serif-display">Designed for the woman who defines her own.</h2>
+    <p>LUXPRO exists for a wardrobe built on intention, not trend — pieces that hold their shape and their relevance well past a single season.</p>
+    <a href="#" class="btn btn-outline">Discover LUXPRO</a>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="container">
+    <h2 class="serif-display">Enter the world of LUXPRO</h2>
+    <p>Early access to new collections, editorial stories, and private sale previews.</p>
+    <form class="nl-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Joined';">
+      <input type="email" placeholder="Email address" required aria-label="Email address">
+      <button type="submit">Join LUXPRO</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo">LUXPRO</a>
+      </div>
+      <div>
+        <h5>Shop</h5>
+        <ul>
+          <li><a href="#" class="underline-link">Women</a></li>
+          <li><a href="#" class="underline-link">New In</a></li>
+          <li><a href="#" class="underline-link">Collections</a></li>
+          <li><a href="#" class="underline-link">Best Sellers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>About</h5>
+        <ul>
+          <li><a href="#" class="underline-link">Our Story</a></li>
+          <li><a href="#" class="underline-link">Journal</a></li>
+          <li><a href="#" class="underline-link">Craftsmanship</a></li>
+          <li><a href="#" class="underline-link">Sustainability</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Client Services</h5>
+        <ul>
+          <li><a href="#" class="underline-link">Contact</a></li>
+          <li><a href="#" class="underline-link">Shipping</a></li>
+          <li><a href="#" class="underline-link">Returns</a></li>
+          <li><a href="#" class="underline-link">Size Guide</a></li>
+          <li><a href="#" class="underline-link">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#" class="underline-link">Privacy</a></li>
+          <li><a href="#" class="underline-link">Terms</a></li>
+          <li><a href="#" class="underline-link">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 LUXPRO. All rights reserved.</span>
+      <div class="region-select">
+        <select aria-label="Region"><option>United States</option><option>United Kingdom</option><option>Bangladesh</option><option>European Union</option></select>
+        <select aria-label="Currency"><option>USD $</option><option>EUR €</option><option>GBP £</option></select>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
-  // ⚠️ Ei URL ta apnar deploy kora backend-er URL diye replace korun
-  // (Render/Railway/Vercel e deploy korar por je URL pabben)
-  const BACKEND_URL = "https://fb-downloader-32u0.onrender.com";
+// header solid-on-scroll
+const header = document.getElementById('siteHeader');
+const toggleHeader = () => {
+  if(window.scrollY > 40){ header.classList.add('solid'); }
+  else{ header.classList.remove('solid'); }
+};
+window.addEventListener('scroll', toggleHeader, {passive:true});
+toggleHeader();
 
-  const urlInput = document.getElementById("fbUrl");
-  const btn = document.getElementById("downloadBtn");
-  const msgBox = document.getElementById("msgBox");
-  const resultBox = document.getElementById("resultBox");
-  const hdLink = document.getElementById("hdLink");
-  const sdLink = document.getElementById("sdLink");
-
-  function showMsg(text, type) {
-    msgBox.textContent = text;
-    msgBox.className = "msg " + type;
-    msgBox.style.display = text ? "block" : "none";
-  }
-
-  btn.addEventListener("click", async () => {
-    const url = urlInput.value.trim();
-    resultBox.classList.remove("show");
-
-    if (!url) {
-      showMsg("দয়া করে একটা Facebook video লিংক দিন।", "error");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "খোঁজা হচ্ছে...";
-    showMsg("লিংক প্রসেস হচ্ছে, একটু অপেক্ষা করুন...", "loading");
-
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/resolve`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        showMsg(data.error || "কিছু একটা সমস্যা হয়েছে।", "error");
-        return;
-      }
-
-      showMsg("", "");
-      if (data.downloads.hd) hdLink.href = data.downloads.hd;
-      else hdLink.style.display = "none";
-
-      if (data.downloads.sd) sdLink.href = data.downloads.sd;
-      else sdLink.style.display = "none";
-
-      resultBox.classList.add("show");
-    } catch (err) {
-      showMsg("Backend-এ কানেক্ট করা যায়নি। BACKEND_URL ঠিক আছে কিনা চেক করুন।", "error");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Download Link বের করুন";
-    }
+// wishlist heart toggle
+document.querySelectorAll('.wish-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const active = btn.textContent.trim() === '♥';
+    btn.textContent = active ? '♡' : '♥';
+    btn.style.color = active ? 'inherit' : 'var(--sale)';
   });
+});
 </script>
 
 </body>
